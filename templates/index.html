@@ -213,10 +213,30 @@ src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAIOMABMAAAA
                 border-image: url("w95border.png") 24 stretch;
             }
             .minimized {
-              height: 0px;
-              position: relative;
+              animation-duration: 3s;
+              animation-name: spin-to-win;
+              animation-timing-function: ease-in;
               top: 0;
               left: 0;
+              position: relative;
+            }
+            @keyframes spin-to-win {
+              from { 
+                top: 40vh;
+                left: 40vw;
+                position: fixed;
+                transform: rotate(0deg);
+              }
+              99% {
+                position: fixed;
+              }
+              to {
+                top: 110vh;
+                left: 40vw;
+                height: 0px;
+                position: relative;
+                transform: rotate(360deg);
+              }
             }
             #header {
                 margin: 0 auto;
