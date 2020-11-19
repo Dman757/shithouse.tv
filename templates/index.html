@@ -209,17 +209,29 @@ src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAIOMABMAAAA
                 left: 40vw;
                 margin: 0 auto;
 
+              animation-name: spin-to-win;
                 border: 24px solid transparent;
                 border-image: url("w95border.png") 24 stretch;
             }
             .minimized {
               animation-duration: 3s;
-              animation-name: spin-to-win;
+              
               animation-timing-function: ease-in;
+              animation-direction: normal;
               top: 0;
               left: 0;
               position: relative;
             }
+
+            .unminimized {
+              animation-duration: 3s;
+              animation-timing-function: ease-in;
+              animation-direction: reverse;
+                              position: fixed;
+                top: 40vh;
+                left: 40vw
+            }
+
             @keyframes spin-to-win {
               from { 
                 top: 40vh;
@@ -853,6 +865,7 @@ function cycleBones() {
                 levelCount: 0,
                 levelUpReq: 0,
                 visible: true,
+                viscount: 0,
               };
               this.getRandomLevelReq = this.getRandomLevelReq.bind(this);
             }
@@ -883,12 +896,17 @@ function cycleBones() {
               () => this.setState({levelUpReq: this.getRandomLevelReq(this.state.count)}))
             }
             static getDerivedStateFromProps(props, state) {
-              if (state.visible) {
+                
+              if (state.visible && state.viscount <= 0) {
                 document.querySelector("#gdpr_compliant_container").classList.remove('minimized');
                 return null
-              } else {
-                document.querySelector("#gdpr_compliant_container").classList.add('minimized');
+              } else if (state.visible && state.viscount > 0) {
+                document.querySelector("#gdpr_compliant_container").classList.remove('minimized');
+                document.querySelector("#gdpr_compliant_container").classList.add('unminimized');
                 return null
+                } else {
+                  document.querySelector("#gdpr_compliant_container").classList.add('minimized');
+                  return null
               }
             }
             render() {  
@@ -928,7 +946,7 @@ function cycleBones() {
                 {
                   onClick: (e)=> {
                     e.preventDefault();
-                    this.setState({ visible: false })
+                    this.setState(prevState => ({ visible: false, viscount: prevState.viscount + 1 }))
                   },
                   key: 'closeButton',
                   className: "ms-exit",
@@ -946,7 +964,7 @@ function cycleBones() {
                 {
                   onClick: (e)=> {
                     e.preventDefault();
-                    this.setState(prevState => ({ visible: !prevState.visible }))
+                    this.setState(prevState => ({ visible: !prevState.visible, viscount: prevState.viscount + 1 }))
                   },
                   key: 'minimizeButton',
                   className: "ms-exit",
